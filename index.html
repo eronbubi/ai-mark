@@ -401,7 +401,7 @@ const BUILTIN = [
     hue:      162,
     released: "2024-05",
     context:  "128K",
-    note:     "Multimodales Modell von OpenAI für Text, Bild und Audio.",
+    note:     "Multimodales Allround-Modell von OpenAI; nimmt Text und Bilder entgegen, gibt Text aus.",
     s: { text:51, plan:33, verst:21, code:19, research:56, math:34, science:66, agent:35 }
   },
   {
@@ -410,45 +410,62 @@ const BUILTIN = [
     lab:      "Anthropic",
     hue:      18,
     released: "2026-02",
-    note:     "Großes Modell der Claude-Familie von Anthropic.",
+    context:  "1M",
+    note:     "Großes Claude-Modell von Anthropic mit adaptivem Denken; inzwischen Legacy-Modell.",
     s: { text:55, plan:77, verst:55, code:44, research:50, math:50, science:50, agent:54 }
   },
   {
     id:       "gpt-5-5",
     name:     "GPT-5.5",
     lab:      "OpenAI",
-    note:     "Modell der GPT-5-Reihe von OpenAI.",
+    released: "2026-04",
+    context:  "1M",
+    note:     "Flaggschiff von OpenAI für komplexe Coding- und Fachaufgaben.",
     s: { text:50, plan:74, verst:60, code:45, research:59, math:67, science:61, agent:44 }
   },
   {
     id:       "claude-sonnet-5",
     name:     "Claude Sonnet 5",
     lab:      "Anthropic",
-    note:     "Mittleres Modell der Claude-5-Familie von Anthropic.",
+    released: "2026-06",
+    context:  "1M",
+    note:     "Sonnet-Modell der fünften Claude-Generation: Balance aus Tempo und Intelligenz.",
     s: { text:66, plan:57, verst:50, code:47, research:61, math:45, science:54, agent:55 }
   },
   {
     id:       "gpt-5-6-luna",
     name:     "GPT-5.6 Luna",
     lab:      "OpenAI",
+    released: "2026-07",
+    context:  "1M",
+    note:     "Kleinste und günstigste Stufe der GPT-5.6-Familie, für große Mengen gedacht.",
     s: { text:54, plan:50, verst:44, code:40, research:62, math:39, science:29, agent:69 }
   },
   {
     id:       "gpt-5-6-terra",
     name:     "GPT-5.6 Terra",
     lab:      "OpenAI",
+    released: "2026-07",
+    context:  "1M",
+    note:     "Mittlere Stufe der GPT-5.6-Familie, Kompromiss aus Leistung und Kosten.",
     s: { text:60, plan:59, verst:50, code:51, research:62, math:40, science:45, agent:70 }
   },
   {
     id:       "gpt-5-6-sol",
     name:     "GPT-5.6 Sol",
     lab:      "OpenAI",
+    released: "2026-07",
+    context:  "1M",
+    note:     "Größte Stufe der GPT-5.6-Familie, OpenAIs Flaggschiff für komplexe Fachaufgaben.",
     s: { text:70, plan:67, verst:78, code:77, research:77, math:62, science:60, agent:78 }
   },
   {
     id:       "claude-opus-4-7",
     name:     "Claude Opus 4.7",
     lab:      "Anthropic",
+    released: "2026-04",
+    context:  "1M",
+    note:     "Nachfolger von Opus 4.6 mit neuem Tokenizer; inzwischen Legacy-Modell.",
     s: { text:78, plan:70, verst:64, code:73, research:61, math:70, science:70, agent:67 }
   }
 ];
