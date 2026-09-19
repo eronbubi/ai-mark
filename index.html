@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AI-Mark</title>
+<meta name="description" content="Benchmark-Index für KI-Modelle. Punkte in acht Disziplinen, jede Zahl mit Quelle.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F7F5F2; --surface:#FFFFFF; --surface-2:#F1EEE9; --surface-3:#E9E5DE;
+  --line:#E2DDD5; --line-strong:#CFC8BD;
+  --ink:#16130F; --ink-2:#585047; --ink-3:#8C8478;
+  --accent:#E8571F; --accent-ink:#FFFFFF; --accent-dim:rgba(232,87,31,.12);
+  --s1:#E8571F; --s2:#0E8F86; --s3:#7C5CD6;
+  --good:#1D7A52; --warn:#9A6B12;
+  --grid:rgba(22,19,15,.10); --shadow:0 1px 2px rgba(22,19,15,.05), 0 8px 24px -16px rgba(22,19,15,.25);
+  --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display:"Archivo", system-ui, sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E0D0C; --surface:#171614; --surface-2:#1E1C19; --surface-3:#272420;
+  --line:#2C2A26; --line-strong:#3D3934;
+  --ink:#F5F2EC; --ink-2:#A79F94; --ink-3:#7A7267;
+  --accent:#FF7A2F; --accent-ink:#1A0E06; --accent-dim:rgba(255,122,47,.14);
+  --s1:#E06213; --s2:#22A79C; --s3:#9070F0;
+  --good:#3EA97A; --warn:#C99A3A;
+  --grid:rgba(245,242,236,.10); --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -18px rgba(0,0,0,.8);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E0D0C; --surface:#171614; --surface-2:#1E1C19; --surface-3:#272420;
+  --line:#2C2A26; --line-strong:#3D3934;
+  --ink:#F5F2EC; --ink-2:#A79F94; --ink-3:#7A7267;
+  --accent:#FF7A2F; --accent-ink:#1A0E06; --accent-dim:rgba(255,122,47,.14);
+  --s1:#E06213; --s2:#22A79C; --s3:#9070F0;
+  --good:#3EA97A; --warn:#C99A3A;
+  --grid:rgba(245,242,236,.10); --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -18px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  padding-top:env(safe-area-inset-top, 0px); padding-bottom:env(safe-area-inset-bottom, 0px);
+}
+img{max-width:100%}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:var(--display); font-weight:700; text-wrap:balance; margin:0; letter-spacing:-.02em}
+a{color:inherit}
+button{font:inherit; color:inherit; background:none; border:none; cursor:pointer}
+input{font:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+.wrap{width:100%; max-width:1180px; margin:0 auto; padding-inline:20px}
+.mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3)}
+
+.topbar{
+  position:sticky; top:env(safe-area-inset-top, 0px); z-index:40;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(14px) saturate(1.4);
+  border-bottom:1px solid var(--line);
+}
+.topbar .wrap{display:flex; align-items:center; gap:18px; height:60px}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; margin-right:auto}
+.brand-mark{width:26px; height:26px; flex:0 0 auto}
+.brand-name{font-family:var(--display); font-weight:800; font-size:17px; font-stretch:118%; letter-spacing:-.01em}
+.brand-name em{font-style:normal; color:var(--accent)}
+.nav{display:flex; gap:4px}
+.nav a{text-decoration:none; font-size:13.5px; color:var(--ink-2); padding:6px 10px; border-radius:7px}
+.nav a:hover{color:var(--ink); background:var(--surface-2)}
+.icon-btn{width:34px; height:34px; display:grid; place-items:center; border:1px solid var(--line); border-radius:9px; color:var(--ink-2); background:var(--surface)}
+.icon-btn:hover{color:var(--ink); border-color:var(--line-strong)}
+
+.hero{padding-block:52px 34px; border-bottom:1px solid var(--line)}
+.hero-grid{display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:48px; align-items:end}
+.hero h1{font-size:clamp(38px, 6.4vw, 66px); line-height:.98; font-stretch:112%; letter-spacing:-.035em; margin:14px 0 0}
+.hero h1 .thin{font-weight:400; font-stretch:88%; color:var(--ink-2)}
+.hero p{max-width:56ch; color:var(--ink-2); font-size:16.5px; margin:18px 0 0}
+.status{
+  display:inline-flex; align-items:center; gap:9px; margin-top:20px;
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.04em; color:var(--ink-2);
+  border:1px solid var(--line-strong); background:var(--surface); padding:6px 12px; border-radius:999px;
+}
+.status i{width:7px; height:7px; border-radius:50%; background:var(--ink-3); flex:0 0 auto}
+.facts{display:grid; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden}
+.fact{background:var(--surface); padding:14px 16px; display:flex; justify-content:space-between; align-items:baseline; gap:12px}
+.fact dt{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+.fact dd{margin:0; font-family:var(--mono); font-size:19px; font-weight:600; font-variant-numeric:tabular-nums}
+
+section{padding-block:46px}
+.sec-head{display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:20px}
+.sec-head h2{font-size:26px; font-stretch:106%; margin-top:6px}
+.sec-head p{margin:6px 0 0; color:var(--ink-2); font-size:14px; max-width:60ch}
+
+.controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:14px}
+.search{display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:9px; padding:0 10px; height:34px; min-width:190px}
+.search input{border:none; background:none; outline:none; color:var(--ink); width:100%; font-size:13.5px}
+.search input::placeholder{color:var(--ink-3)}
+.chips{display:flex; gap:6px; flex-wrap:wrap}
+.chip{font-family:var(--mono); font-size:11.5px; letter-spacing:.04em; border:1px solid var(--line); background:var(--surface); color:var(--ink-2); padding:6px 11px; border-radius:999px; white-space:nowrap}
+.chip:hover{border-color:var(--line-strong); color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:600}
+.chip[disabled]{opacity:.45; cursor:not-allowed}
+
+.board{border:1px solid var(--line); border-radius:14px; background:var(--surface); overflow:hidden; box-shadow:var(--shadow)}
+.board-scroll{overflow-x:auto}
+table{width:100%; border-collapse:collapse; min-width:720px}
+thead th{font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-3); font-weight:500; text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); background:var(--surface-2); white-space:nowrap}
+thead th.num{text-align:right}
+tbody td{padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr.is-picked{background:var(--accent-dim)}
+.rank{font-family:var(--mono); font-size:13px; color:var(--ink-3); width:38px; font-variant-numeric:tabular-nums}
+.rank.top{color:var(--accent); font-weight:600}
+.mcell{display:flex; align-items:center; gap:11px; min-width:0}
+.sigil{width:34px; height:34px; border-radius:9px; flex:0 0 auto; display:block}
+.mname{font-weight:600; font-size:14.5px; letter-spacing:-.01em; white-space:nowrap}
+.mlab{font-family:var(--mono); font-size:11px; color:var(--ink-3); letter-spacing:.03em}
+.scorecell{display:flex; align-items:center; gap:12px; justify-content:flex-end; min-width:132px}
+.scoreval{font-family:var(--mono); font-size:15px; font-weight:600; font-variant-numeric:tabular-nums; width:44px; text-align:right}
+.meter{width:74px; height:6px; border-radius:2px; background:var(--surface-3); overflow:hidden; flex:0 0 auto}
+.meter i{display:block; height:100%; background:var(--accent); border-radius:2px 4px 4px 2px}
+.catcell{font-family:var(--mono); font-size:12.5px; text-align:right; font-variant-numeric:tabular-nums; color:var(--ink-2); width:56px}
+.catcell.best{color:var(--ink); font-weight:600}
+.pickbox{width:17px; height:17px; border:1.5px solid var(--line-strong); border-radius:5px; display:grid; place-items:center; color:transparent; flex:0 0 auto}
+tr.is-picked .pickbox{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.pickbox svg{width:11px; height:11px}
+
+/* leerer Zustand */
+.blank{padding:44px 28px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px}
+.blank svg{color:var(--ink-3); opacity:.65}
+.blank h3{font-size:17px; font-stretch:104%}
+.blank p{margin:0; color:var(--ink-2); font-size:14px; max-width:46ch}
+.schema{
+  text-align:left; font-family:var(--mono); font-size:12px; line-height:1.7;
+  background:var(--surface-2); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; color:var(--ink-2); overflow-x:auto; max-width:100%; white-space:pre;
+}
+.schema b{color:var(--accent); font-weight:500}
+
+.compare-grid{display:grid; grid-template-columns:minmax(0,440px) minmax(0,1fr); gap:34px; align-items:start}
+.radar-box{border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:8px 8px 4px}
+.radar-box svg{width:100%; height:auto; display:block; max-width:100%}
+.legend{display:flex; gap:14px; flex-wrap:wrap; padding:2px 12px 12px}
+.legend span{display:inline-flex; align-items:center; gap:7px; font-family:var(--mono); font-size:11.5px; color:var(--ink-2)}
+.swatch{width:10px; height:10px; border-radius:3px; display:inline-block}
+.cmp-table{width:100%; border-collapse:collapse}
+.cmp-table th,.cmp-table td{padding:9px 10px; border-bottom:1px solid var(--line); font-size:13.5px}
+.cmp-table th{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); font-weight:500; text-align:right}
+.cmp-table th:first-child{text-align:left}
+.cmp-table td{text-align:right; font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--ink-2)}
+.cmp-table td:first-child{text-align:left; font-family:var(--sans); color:var(--ink)}
+.cmp-table td.lead{color:var(--ink); font-weight:600}
+
+.catgrid{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:14px; overflow:hidden}
+.catcard{background:var(--surface); padding:18px 18px 20px; display:flex; flex-direction:column; gap:7px}
+.catcard h3{font-size:15.5px; font-stretch:104%; display:flex; align-items:center; gap:9px}
+.catcard .dot{width:7px; height:7px; border-radius:50%; background:var(--accent); flex:0 0 auto}
+.catcard p{margin:0; font-size:13.5px; color:var(--ink-2); line-height:1.5}
+.catcard .lead-model{margin-top:auto; padding-top:11px; border-top:1px solid var(--line); font-family:var(--mono); font-size:11.5px; color:var(--ink-3); display:flex; justify-content:space-between; gap:10px}
+.catcard .lead-model b{color:var(--ink); font-weight:600}
+
+.method{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:28px}
+.method div h3{font-size:15px; font-stretch:104%; margin-bottom:7px}
+.method div p{margin:0; font-size:13.5px; color:var(--ink-2)}
+.method code{font-family:var(--mono); font-size:12.5px; background:var(--surface-2); padding:1px 5px; border-radius:4px; border:1px solid var(--line)}
+
+.scrim{position:fixed; inset:0; background:rgba(10,8,6,.5); backdrop-filter:blur(2px); z-index:50}
+.drawer{position:fixed; top:0; right:0; bottom:0; width:min(460px, 100%); z-index:51; background:var(--surface); border-left:1px solid var(--line); overflow-y:auto; padding:24px 24px calc(30px + env(safe-area-inset-bottom, 0px)); padding-top:calc(20px + env(safe-area-inset-top, 0px))}
+.drawer-top{display:flex; align-items:flex-start; gap:14px; margin-bottom:8px}
+.drawer-top .sigil{width:52px; height:52px; border-radius:13px}
+.drawer h2{font-size:23px; font-stretch:106%; line-height:1.15}
+.drawer .close{margin-left:auto; color:var(--ink-3); font-size:22px; line-height:1; padding:2px 6px}
+.drawer .close:hover{color:var(--ink)}
+.drawer-note{color:var(--ink-2); font-size:14px; margin:12px 0 18px}
+.meta{display:grid; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:11px; overflow:hidden; margin-bottom:22px}
+.meta div{background:var(--surface); padding:9px 12px; display:flex; justify-content:space-between; gap:12px; font-size:13px}
+.meta dt{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3)}
+.meta dd{margin:0; font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:right}
+.meta dd a{color:var(--accent)}
+.bars{display:flex; flex-direction:column; gap:11px; margin-top:12px}
+.bar-row{display:grid; grid-template-columns:104px 1fr 40px; align-items:center; gap:11px}
+.bar-row span:first-child{font-size:12.5px; color:var(--ink-2)}
+.bar-track{height:8px; background:var(--surface-3); border-radius:2px; overflow:hidden}
+.bar-track i{display:block; height:100%; background:var(--accent); border-radius:2px 4px 4px 2px}
+.bar-row .v{font-family:var(--mono); font-size:13px; font-weight:600; text-align:right; font-variant-numeric:tabular-nums}
+
+footer{border-top:1px solid var(--line); padding-block:26px 34px; color:var(--ink-3); font-size:12.5px}
+footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:center}
+
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr; gap:30px}
+  .compare-grid{grid-template-columns:1fr; gap:22px}
+}
+@media (max-width:640px){
+  .wrap{padding-inline:16px}
+  .nav{display:none}
+  .hero{padding-block:36px 26px}
+  section{padding-block:34px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="1" y="14" width="5" height="9" rx="1.5" fill="currentColor" opacity=".38"></rect>
+        <rect x="8.5" y="8" width="5" height="15" rx="1.5" fill="currentColor" opacity=".66"></rect>
+        <rect x="16" y="1" width="5" height="22" rx="1.5" fill="var(--accent)"></rect>
+      </svg>
+      <span class="brand-name">AI<em>-</em>Mark</span>
+    </a>
+    <nav class="nav">
+      <a href="#rangliste">Rangliste</a>
+      <a href="#vergleich">Vergleich</a>
+      <a href="#kategorien">Kategorien</a>
+      <a href="#methodik">Methodik</a>
+    </nav>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="Farbschema wechseln">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow" id="hero-eyebrow">Benchmark-Index</p>
+        <h1>Wie gut ist ein<br>Modell <span class="thin">wirklich?</span></h1>
+        <p>AI-Mark misst Sprachmodelle in acht Disziplinen — von Textqualität über Planung und Coding bis zu Mathematik und Naturwissenschaft. Jede Zahl ist ein Punktwert von 0 bis 100, und jede Zahl braucht eine Quelle.</p>
+        <p class="status"><i></i><span id="status-text">Keine Ergebnisse eingetragen</span></p>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Modelle im Index</dt><dd id="fact-models">0</dd></div>
+        <div class="fact"><dt>Kategorien</dt><dd id="fact-cats">8</dd></div>
+        <div class="fact"><dt>Spitzenreiter</dt><dd id="fact-top">—</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <section id="rangliste">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">01 — Rangliste</p>
+          <h2>Der AI-Mark-Index</h2>
+          <p id="board-hint">Sobald Ergebnisse eingetragen sind: Kategorie anklicken zum Sortieren, Zeile für das volle Profil, Kästchen für den Vergleich.</p>
+        </div>
+      </div>
+      <div class="controls">
+        <label class="search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5" stroke-linecap="round"></path></svg>
+          <input id="q" type="search" placeholder="Modell oder Anbieter suchen" autocomplete="off">
+        </label>
+        <div class="chips" id="sort-chips"></div>
+      </div>
+      <div class="board">
+        <div class="board-scroll" id="board-table" hidden>
+          <table>
+            <thead><tr id="thead-row"></tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="blank" id="board-blank">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="16" rx="2.5"></rect><path d="M3 9.5h18M8.5 9.5V20" stroke-linecap="round"></path>
+          </svg>
+          <h3>Noch keine Ergebnisse</h3>
+          <p>Der Index ist leer. Es stehen bewusst keine Zahlen hier — erst wenn ein Ergebnis mit Quelle eingetragen wird, erscheint es in der Rangliste.</p>
+          <div class="schema"><b>// so sieht ein Eintrag aus</b>
+{
+  name:    "Modellname",
+  lab:     "Anbieter",
+  released:"2026-05",
+  context: "500K",
+  quelle:  "https://…",
+  s: { text:—, plan:—, verst:—, code:—,
+       research:—, math:—, science:—, agent:— }
+}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="vergleich">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">02 — Vergleich</p>
+          <h2>Profile übereinanderlegen</h2>
+          <p>Bis zu drei Modelle als Netzdiagramm, mit Punktetabelle daneben.</p>
+        </div>
+        <button class="chip" id="clear-picks" type="button">Auswahl zurücksetzen</button>
+      </div>
+      <div id="compare-body"></div>
+    </div>
+  </section>
+
+  <section id="kategorien">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">03 — Kategorien</p>
+          <h2>Was jede Zahl misst</h2>
+          <p>Acht Disziplinen, je 0–100 Punkte. Unten steht das führende Modell der Kategorie, sobald Daten vorliegen.</p>
+        </div>
+      </div>
+      <div class="catgrid" id="catgrid"></div>
+    </div>
+  </section>
+
+  <section id="methodik">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">04 — Methodik</p>
+          <h2>Wie der Index entsteht</h2>
+        </div>
+      </div>
+      <div class="method">
+        <div>
+          <h3>Skala</h3>
+          <p>Jede Kategorie wird auf 0–100 normalisiert. 100 heißt: bestmögliches beobachtetes Ergebnis, nicht „fehlerfrei“. Werte unter 40 markieren echte Schwächen, nicht nur Rundungsrauschen.</p>
+        </div>
+        <div>
+          <h3>Index</h3>
+          <p>Der AI-Mark-Index ist das arithmetische Mittel aller acht Kategorien: <code>Index = Σ Punkte / 8</code>. Keine Gewichtung — ein Modell kann sich nicht über eine einzige starke Disziplin nach oben retten.</p>
+        </div>
+        <div>
+          <h3>Keine geschätzten Zahlen</h3>
+          <p>Es wird kein Wert interpoliert, gerundet aus dem Bauch heraus oder aus Erinnerung ergänzt. Ein Modell ohne belegte Punktzahl bleibt aus dem Index draußen, statt mit einem Platzhalter aufzutauchen.</p>
+        </div>
+        <div>
+          <h3>Modellbild</h3>
+          <p>Jedes Modell bekommt eine eigene Signatur-Grafik. Sie wird deterministisch aus Modellname und Anbieterfarbe erzeugt — gleiches Modell, gleiches Bild, auf jedem Gerät.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="mono">AI-MARK · Benchmark-Index für Sprachmodelle</span>
+    <span class="mono" id="foot-count">—</span>
+  </div>
+</footer>
+
+<div id="drawer-root"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   KATEGORIEN
+   ============================================================ */
+const CATS = [
+  {key:"text",    label:"Text",        desc:"Formulierung, Stil, Struktur und Treue zum Auftrag über lange Texte hinweg."},
+  {key:"plan",    label:"Planung",     desc:"Mehrstufige Aufgaben zerlegen, Reihenfolge wählen, Zwischenstände korrigieren."},
+  {key:"verst",   label:"Verständnis", desc:"Lange Kontexte lesen, Bezüge auflösen, Implizites und Widersprüche erkennen."},
+  {key:"code",    label:"Coding",      desc:"Lauffähiger Code, Bugfixes in fremden Repos, Tests und Refactorings."},
+  {key:"research",label:"Research",    desc:"Quellen finden, prüfen, gegeneinander abwägen und sauber zusammenfassen."},
+  {key:"math",    label:"Mathematik",  desc:"Beweise, Wettbewerbsaufgaben und Rechnungen ohne stillen Rechenfehler."},
+  {key:"science", label:"Science",     desc:"Physik, Chemie und Biologie auf Graduiertenniveau, inklusive Einheiten."},
+  {key:"agent",   label:"Agenten",     desc:"Werkzeuge nutzen, Fehler auffangen und eine Aufgabe eigenständig zu Ende bringen."}
+];
+
+/* ============================================================
+   MODELLE — Einträge kommen ausschließlich vom Betreiber.
+   Keine geschätzten oder erfundenen Punktwerte.
+   Schema:
+   { id:"kurzname", name:"Modellname", lab:"Anbieter", hue:18,
+     released:"2026-05", context:"500K", quelle:"https://…",
+     note:"Ein Satz zum Modell.",
+     s:{ text:0, plan:0, verst:0, code:0, research:0, math:0, science:0, agent:0 } }
+   Alle acht Werte in s sind Pflicht (0–100). Unvollständige Einträge
+   werden nicht angezeigt, statt mit falschem Index aufzutauchen.
+   ============================================================ */
+const BUILTIN = [];
+
+const MODELS = BUILTIN.filter(m => {
+  const ok = m && m.id && m.name && m.s && CATS.every(c =>
+    typeof m.s[c.key] === "number" && m.s[c.key] >= 0 && m.s[c.key] <= 100);
+  if(!ok) console.warn("AI-Mark: Eintrag ausgelassen (unvollständig):", m && (m.name || m.id));
+  return ok;
+});
+
+const SERIES = ["--s1","--s2","--s3"];
+const $ = (s,r)=> (r||document).querySelector(s);
+const idx = m => CATS.reduce((a,c)=>a+m.s[c.key],0)/CATS.length;
+const fmt = n => n.toFixed(1);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- Signatur-Grafik: deterministisch aus dem Namen ---------- */
+function hash(str){ let h=2166136261; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619);} return h>>>0; }
+function sigil(m, size){
+  const h = hash(m.id + m.name), uid = "sg-" + m.id + "-" + size;
+  const motif = h % 4;
+  const hue = m.hue == null ? (h % 360) : m.hue, hue2 = (hue + 34) % 360;
+  const c1 = `hsl(${hue} 72% 54%)`, c2 = `hsl(${hue2} 64% 34%)`;
+  const ink = "rgba(255,255,255,.92)", ink2 = "rgba(255,255,255,.45)";
+  let art = "";
+  if(motif===0){
+    art = `<circle cx="32" cy="32" r="19" fill="none" stroke="${ink2}" stroke-width="3"/><circle cx="32" cy="32" r="9" fill="${ink}"/>`;
+  } else if(motif===1){
+    const rows=[0,1,2,3];
+    art = rows.map(r=>rows.map(c=>{
+      const on = ((h >> (r*4+c)) & 1);
+      return `<rect x="${13+c*10}" y="${13+r*10}" width="7" height="7" rx="2" fill="${on?ink:ink2}"/>`;
+    }).join("")).join("");
+  } else if(motif===2){
+    art = `<path d="M15 47 L32 15 L49 47 Z" fill="none" stroke="${ink}" stroke-width="3.2" stroke-linejoin="round"/><path d="M24 39 L40 39" stroke="${ink2}" stroke-width="3.2" stroke-linecap="round"/>`;
+  } else {
+    art = `<rect x="14" y="34" width="9" height="16" rx="2.5" fill="${ink2}"/><rect x="27" y="24" width="9" height="26" rx="2.5" fill="${ink2}"/><rect x="40" y="14" width="9" height="36" rx="2.5" fill="${ink}"/>`;
+  }
+  return `<svg class="sigil" viewBox="0 0 64 64" width="${size}" height="${size}" role="img" aria-label="Signatur ${esc(m.name)}">
+    <defs><linearGradient id="${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs>
+    <rect width="64" height="64" rx="17" fill="url(#${uid})"/>${art}</svg>`;
+}
+
+const state = { sort:"index", q:"", picks:[] };
+
+function buildChrome(){
+  const chips = $("#sort-chips");
+  chips.innerHTML = [{key:"index",label:"Index"}].concat(CATS).map(c=>
+    `<button class="chip" type="button" data-sort="${c.key}" aria-pressed="false"${MODELS.length?"":" disabled"}>${c.label}</button>`).join("");
+  chips.addEventListener("click", e=>{
+    const b = e.target.closest("[data-sort]"); if(!b || b.disabled) return;
+    state.sort = b.dataset.sort; render();
+  });
+  $("#thead-row").innerHTML =
+    `<th style="width:38px">#</th><th>Modell</th><th class="num">Index</th>` +
+    CATS.map(c=>`<th class="num">${c.label}</th>`).join("") + `<th style="width:34px"></th>`;
+  $("#q").disabled = !MODELS.length;
+}
+
+function render(){
+  document.querySelectorAll("#sort-chips .chip").forEach(b=>
+    b.setAttribute("aria-pressed", String(b.dataset.sort === state.sort)));
+
+  $("#board-blank").hidden = MODELS.length > 0;
+  $("#board-table").hidden = MODELS.length === 0;
+  if(!MODELS.length){ renderCompare(); return; }
+
+  const q = state.q.trim().toLowerCase();
+  const rows = MODELS
+    .filter(m => !q || m.name.toLowerCase().includes(q) || m.lab.toLowerCase().includes(q))
+    .map(m => ({m, v: state.sort === "index" ? idx(m) : m.s[state.sort]}))
+    .sort((a,b) => b.v - a.v);
+
+  const max = rows.length ? rows[0].v : 100;
+  const bestPerCat = {};
+  CATS.forEach(c => { bestPerCat[c.key] = Math.max.apply(null, MODELS.map(m=>m.s[c.key])); });
+
+  $("#tbody").innerHTML = rows.map((r,i)=>{
+    const m = r.m, picked = state.picks.includes(m.id);
+    return `<tr data-id="${esc(m.id)}" class="${picked?"is-picked":""}" tabindex="0">
+      <td class="rank ${i<3?"top":""}">${String(i+1).padStart(2,"0")}</td>
+      <td><div class="mcell">${sigil(m,34)}<div><div class="mname">${esc(m.name)}</div><div class="mlab">${esc(m.lab)}</div></div></div></td>
+      <td><div class="scorecell"><span class="scoreval">${fmt(r.v)}</span>
+        <span class="meter"><i style="width:${Math.max(3,(r.v/max)*100)}%"></i></span></div></td>
+      ${CATS.map(c=>`<td class="catcell ${m.s[c.key]===bestPerCat[c.key]?"best":""}">${m.s[c.key]}</td>`).join("")}
+      <td><button class="pickbox" type="button" data-pick="${esc(m.id)}" aria-label="${esc(m.name)} vergleichen" aria-pressed="${picked}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      </button></td>
+    </tr>`;
+  }).join("");
+  renderCompare();
+}
+
+function radar(models){
+  const W=480,H=370,cx=240,cy=180,R=106,n=CATS.length;
+  const pt=(i,rad)=>{ const a=-Math.PI/2 + i*2*Math.PI/n; return [cx+Math.cos(a)*rad, cy+Math.sin(a)*rad]; };
+  let g="";
+  [0.25,0.5,0.75,1].forEach(f=>{
+    g += `<polygon points="${CATS.map((_,i)=>pt(i,R*f).map(v=>v.toFixed(1)).join(",")).join(" ")}" fill="none" stroke="var(--grid)" stroke-width="1"/>`;
+  });
+  CATS.forEach((_,i)=>{ const [x,y]=pt(i,R); g += `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--grid)" stroke-width="1"/>`; });
+  let labels="";
+  CATS.forEach((c,i)=>{
+    const [x,y]=pt(i,R+20);
+    const dx = x-cx, anchor = Math.abs(dx)<6 ? "middle" : (dx>0 ? "start":"end");
+    labels += `<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="${anchor}" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace" font-size="11">${c.label}</text>`;
+  });
+  let shapes="";
+  models.forEach((m,si)=>{
+    const col = `var(${SERIES[si]})`;
+    shapes += `<polygon points="${CATS.map((c,i)=>pt(i,R*(m.s[c.key]/100)).map(v=>v.toFixed(1)).join(",")).join(" ")}" fill="${col}" fill-opacity="0.14" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>`;
+    shapes += CATS.map((c,i)=>{ const [x,y]=pt(i,R*(m.s[c.key]/100));
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4" fill="${col}" stroke="var(--surface)" stroke-width="2"/>`;}).join("");
+  });
+  const scale = `<text x="${cx-6}" y="${cy-R+12}" text-anchor="end" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace" font-size="10">100</text>
+                 <text x="${cx-6}" y="${cy-3}" text-anchor="end" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace" font-size="10">0</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Netzdiagramm der Kategoriewerte">${g}${scale}${labels}${shapes}</svg>`;
+}
+
+function renderCompare(){
+  const box = $("#compare-body");
+  const picked = state.picks.map(id => MODELS.find(m=>m.id===id)).filter(Boolean);
+  if(!picked.length){
+    box.innerHTML = `<div class="board"><div class="blank">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M12 3 21 9v6l-9 6-9-6V9z" stroke-linejoin="round"></path><path d="M12 8v8M8 10.5v3M16 10.5v3" stroke-linecap="round"></path></svg>
+      <h3>${MODELS.length ? "Noch nichts ausgewählt" : "Nichts zu vergleichen"}</h3>
+      <p>${MODELS.length
+        ? "In der Rangliste bis zu drei Kästchen anhaken — das Netzdiagramm legt die Profile übereinander."
+        : "Sobald mindestens zwei Modelle mit Punkten im Index stehen, lassen sich ihre Profile hier übereinanderlegen."}</p>
+    </div></div>`;
+    return;
+  }
+  const best = {};
+  CATS.forEach(c => best[c.key] = Math.max.apply(null, picked.map(m=>m.s[c.key])));
+  const bestIdx = Math.max.apply(null, picked.map(idx));
+  box.innerHTML = `<div class="compare-grid">
+    <div class="radar-box">${radar(picked)}
+      <div class="legend">${picked.map((m,i)=>`<span><i class="swatch" style="background:var(${SERIES[i]})"></i>${esc(m.name)}</span>`).join("")}</div>
+    </div>
+    <div class="board-scroll"><table class="cmp-table">
+      <thead><tr><th>Kategorie</th>${picked.map(m=>`<th>${esc(m.name)}</th>`).join("")}</tr></thead>
+      <tbody>
+        ${CATS.map(c=>`<tr><td>${c.label}</td>${picked.map(m=>`<td class="${m.s[c.key]===best[c.key]?"lead":""}">${m.s[c.key]}</td>`).join("")}</tr>`).join("")}
+        <tr><td><b>AI-Mark-Index</b></td>${picked.map(m=>`<td class="${idx(m)===bestIdx?"lead":""}">${fmt(idx(m))}</td>`).join("")}</tr>
+      </tbody>
+    </table></div>
+  </div>`;
+}
+
+function renderCats(){
+  $("#catgrid").innerHTML = CATS.map(c=>{
+    const withData = MODELS.filter(m => m.s && typeof m.s[c.key] === "number");
+    const lead = withData.slice().sort((a,b)=>b.s[c.key]-a.s[c.key])[0];
+    return `<article class="catcard">
+      <h3><i class="dot"></i>${c.label}</h3>
+      <p>${c.desc}</p>
+      <div class="lead-model"><span>Führend</span><span>${
+        lead ? `<b>${esc(lead.name)}</b> · ${lead.s[c.key]}` : "noch keine Daten"}</span></div>
+    </article>`;
+  }).join("");
+}
+
+function openDrawer(id){
+  const m = MODELS.find(x=>x.id===id); if(!m) return;
+  const root = $("#drawer-root");
+  const bestCat = CATS.slice().sort((a,b)=>m.s[b.key]-m.s[a.key])[0];
+  root.innerHTML = `<div class="scrim" data-close></div>
+    <aside class="drawer" role="dialog" aria-modal="true" aria-label="${esc(m.name)}">
+      <div class="drawer-top">${sigil(m,52)}
+        <div><h2>${esc(m.name)}</h2><p class="mlab">${esc(m.lab)}</p></div>
+        <button class="close" type="button" data-close aria-label="Schließen">×</button>
+      </div>
+      ${m.note ? `<p class="drawer-note">${esc(m.note)}</p>` : ""}
+      <dl class="meta">
+        <div><dt>AI-Mark-Index</dt><dd>${fmt(idx(m))}</dd></div>
+        <div><dt>Veröffentlicht</dt><dd>${esc(m.released || "—")}</dd></div>
+        <div><dt>Kontextfenster</dt><dd>${esc(m.context || "—")}</dd></div>
+        <div><dt>Stärkste Disziplin</dt><dd>${bestCat.label}</dd></div>
+        <div><dt>Quelle</dt><dd>${m.quelle
+          ? `<a href="${esc(m.quelle)}" target="_blank" rel="noopener noreferrer">Ergebnis ansehen</a>` : "—"}</dd></div>
+      </dl>
+      <p class="eyebrow">Punkte je Kategorie</p>
+      <div class="bars">${CATS.map(c=>`<div class="bar-row">
+        <span>${c.label}</span>
+        <span class="bar-track"><i style="width:${m.s[c.key]}%"></i></span>
+        <span class="v">${m.s[c.key]}</span>
+      </div>`).join("")}</div>
+    </aside>`;
+  root.querySelectorAll("[data-close]").forEach(el=> el.addEventListener("click", closeDrawer));
+  document.body.style.overflow = "hidden";
+  const c = root.querySelector(".close"); if(c) c.focus();
+}
+function closeDrawer(){ $("#drawer-root").innerHTML=""; document.body.style.overflow=""; }
+
+function togglePick(id){
+  const i = state.picks.indexOf(id);
+  if(i>-1) state.picks.splice(i,1);
+  else { if(state.picks.length>=3) state.picks.shift(); state.picks.push(id); }
+  render();
+}
+
+$("#tbody").addEventListener("click", e=>{
+  const pick = e.target.closest("[data-pick]");
+  if(pick){ e.stopPropagation(); togglePick(pick.dataset.pick); return; }
+  const tr = e.target.closest("tr[data-id]");
+  if(tr) openDrawer(tr.dataset.id);
+});
+$("#tbody").addEventListener("keydown", e=>{
+  if(e.key!=="Enter" && e.key!==" ") return;
+  const tr = e.target.closest("tr[data-id]");
+  if(tr){ e.preventDefault(); openDrawer(tr.dataset.id); }
+});
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeDrawer(); });
+$("#q").addEventListener("input", e=>{ state.q = e.target.value; render(); });
+$("#clear-picks").addEventListener("click", ()=>{ state.picks = []; render(); });
+
+const root = document.documentElement;
+function currentTheme(){
+  if(root.dataset.theme) return root.dataset.theme;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+try{ const saved = localStorage.getItem("aimark-theme"); if(saved) root.dataset.theme = saved; }catch(_){}
+$("#theme-toggle").addEventListener("click", ()=>{
+  const next = currentTheme()==="dark" ? "light" : "dark";
+  root.dataset.theme = next;
+  try{ localStorage.setItem("aimark-theme", next); }catch(_){}
+});
+
+buildChrome();
+renderCats();
+const top = MODELS.length ? MODELS.slice().sort((a,b)=>idx(b)-idx(a))[0] : null;
+$("#fact-models").textContent = MODELS.length;
+$("#fact-cats").textContent = CATS.length;
+$("#fact-top").textContent = top ? fmt(idx(top)) : "—";
+$("#status-text").textContent = MODELS.length
+  ? MODELS.length + " Modelle im Index"
+  : "Keine Ergebnisse eingetragen";
+$("#foot-count").textContent = MODELS.length + " Modelle · " + CATS.length + " Kategorien";
+render();
+})();
+</script>
+</body>
+</html>
