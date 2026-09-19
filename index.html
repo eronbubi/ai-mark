@@ -193,6 +193,8 @@ tr.is-picked .pickbox{background:var(--accent); border-color:var(--accent); colo
 .bar-track{height:8px; background:var(--surface-3); border-radius:2px; overflow:hidden}
 .bar-track i{display:block; height:100%; background:var(--accent); border-radius:2px 4px 4px 2px}
 .bar-row .v{font-family:var(--mono); font-size:13px; font-weight:600; text-align:right; font-variant-numeric:tabular-nums}
+.drawer-radar-head{margin:26px 0 10px}
+.drawer-radar{padding:4px}
 
 footer{border-top:1px solid var(--line); padding-block:26px 34px; color:var(--ink-3); font-size:12.5px}
 footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:center}
@@ -589,6 +591,8 @@ function openDrawer(id){
         <span class="bar-track"><i style="width:${m.s[c.key]}%"></i></span>
         <span class="v">${m.s[c.key]}</span>
       </div>`).join("")}</div>
+      <p class="eyebrow drawer-radar-head">Profil</p>
+      <div class="radar-box drawer-radar">${radar([m])}</div>
     </aside>`;
   root.querySelectorAll("[data-close]").forEach(el=> el.addEventListener("click", closeDrawer));
   document.body.style.overflow = "hidden";
