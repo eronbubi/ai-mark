@@ -391,7 +391,18 @@ const CATS = [
    Alle acht Werte in s sind Pflicht (0–100). Unvollständige Einträge
    werden nicht angezeigt, statt mit falschem Index aufzutauchen.
    ============================================================ */
-const BUILTIN = [];
+const BUILTIN = [
+  {
+    id:       "gpt-4o",
+    name:     "GPT-4o",
+    lab:      "OpenAI",
+    hue:      162,
+    released: "2024-05",
+    context:  "128K",
+    note:     "Multimodales Modell von OpenAI für Text, Bild und Audio.",
+    s: { text:51, plan:33, verst:21, code:19, research:56, math:34, science:66, agent:35 }
+  }
+];
 
 const MODELS = BUILTIN.filter(m => {
   const ok = m && m.id && m.name && m.s && CATS.every(c =>
@@ -626,9 +637,9 @@ $("#fact-models").textContent = MODELS.length;
 $("#fact-cats").textContent = CATS.length;
 $("#fact-top").textContent = top ? fmt(idx(top)) : "—";
 $("#status-text").textContent = MODELS.length
-  ? MODELS.length + " Modelle im Index"
+  ? MODELS.length + (MODELS.length === 1 ? " Modell" : " Modelle") + " im Index"
   : "Keine Ergebnisse eingetragen";
-$("#foot-count").textContent = MODELS.length + " Modelle · " + CATS.length + " Kategorien";
+$("#foot-count").textContent = MODELS.length + (MODELS.length === 1 ? " Modell · " : " Modelle · ") + CATS.length + " Kategorien";
 render();
 })();
 </script>
