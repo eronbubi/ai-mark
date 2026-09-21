@@ -179,6 +179,13 @@ tr.is-picked .pickbox{background:var(--accent); border-color:var(--accent); colo
 .futurecard .fstatus{display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:var(--warn)}
 .futurecard .fstatus i{width:6px; height:6px; border-radius:50%; background:var(--warn); flex:0 0 auto}
 .futurecard a{color:var(--accent)}
+.futurecard .fproj{margin:6px 0 2px; color:var(--warn)}
+.fbars{display:flex; flex-direction:column; gap:7px; margin-bottom:4px}
+.fbar-row{display:grid; grid-template-columns:82px 1fr 26px; align-items:center; gap:9px}
+.fbar-row span:first-child{font-size:12px; color:var(--ink-2)}
+.fbar-track{height:6px; background:var(--surface-3); border-radius:2px; overflow:hidden}
+.fbar-track i{display:block; height:100%; background:var(--warn); opacity:.75; border-radius:2px 4px 4px 2px}
+.fbar-row .v{font-family:var(--mono); font-size:12px; text-align:right; font-variant-numeric:tabular-nums; color:var(--ink-2)}
 
 .method{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:28px}
 .method div h3{font-size:15px; font-stretch:104%; margin-bottom:7px}
@@ -343,9 +350,9 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
         <div>
           <p class="eyebrow">04 — Future Possible AI's</p>
           <h2>Modelle, die kommen könnten</h2>
-          <p>Eine getrennte Liste außerhalb des Index: angekündigte, vermutete oder erwartete Modelle. Keine Punktwerte, weil es nichts zu messen gibt.</p>
+          <p>Eine getrennte Liste außerhalb des Index: angekündigte, vermutete oder erwartete Modelle, mit geschätzten Punkten. Diese Prognosen sind nicht gemessen und zählen nicht in den Index.</p>
         </div>
-        <span class="chip" aria-hidden="true">Spekulation, keine Messwerte</span>
+        <span class="chip" aria-hidden="true">Prognose, keine Messwerte</span>
       </div>
       <div id="futuregrid"></div>
     </div>
@@ -575,7 +582,10 @@ const MODELS = BUILTIN.filter(m => {
    Schema:
    { id:"kurzname", name:"Modellname", lab:"Anbieter",
      erwartet:"2027", status:"angekündigt" | "vermutet" | "Gerücht",
-     quelle:"https://…", note:"Ein Satz dazu." }
+     quelle:"https://…", note:"Ein Satz dazu.",
+     s:{ text:0, plan:0, verst:0, code:0, research:0, math:0, science:0, agent:0 } }
+   Die Werte in s sind Prognosen, keine Messwerte. Sie zählen nicht in den
+   AI-Mark-Index und erscheinen nirgends in der Rangliste.
    ============================================================ */
 const FUTURE = [];
 
@@ -744,16 +754,24 @@ function renderFuture(){
     return;
   }
   box.className = "futuregrid";
-  box.innerHTML = FUTURE.map(f=>`<article class="futurecard">
+  box.innerHTML = FUTURE.map(f=>{
+    const hasS = f.s && CATS.every(c => typeof f.s[c.key] === "number");
+    return `<article class="futurecard">
     <h3>${esc(f.name)}</h3>
     <p class="flab">${esc(f.lab || "Anbieter offen")}</p>
     ${f.note ? `<p>${esc(f.note)}</p>` : ""}
+    ${hasS ? `<p class="eyebrow fproj">Prognose · Index ${fmt(idx(f))}</p>
+      <div class="fbars">${CATS.map(c=>`<div class="fbar-row">
+        <span>${c.label}</span>
+        <span class="fbar-track"><i style="width:${f.s[c.key]}%"></i></span>
+        <span class="v">${f.s[c.key]}</span>
+      </div>`).join("")}</div>` : ""}
     <div class="frow">
       <span class="fstatus"><i></i>${esc(f.status || "vermutet")}</span>
       <span>erwartet <b>${esc(f.erwartet || "offen")}</b></span>
     </div>
     ${f.quelle ? `<p class="flab"><a href="${esc(f.quelle)}" target="_blank" rel="noopener noreferrer">Quelle</a></p>` : ""}
-  </article>`).join("");
+  </article>`;}).join("");
 }
 
 function openDrawer(id){
