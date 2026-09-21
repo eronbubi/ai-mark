@@ -169,6 +169,17 @@ tr.is-picked .pickbox{background:var(--accent); border-color:var(--accent); colo
 .catcard .lead-model{margin-top:auto; padding-top:11px; border-top:1px solid var(--line); font-family:var(--mono); font-size:11.5px; color:var(--ink-3); display:flex; justify-content:space-between; gap:10px}
 .catcard .lead-model b{color:var(--ink); font-weight:600}
 
+.futuregrid{display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:14px; overflow:hidden}
+.futurecard{background:var(--surface); padding:18px; display:flex; flex-direction:column; gap:8px}
+.futurecard h3{font-size:15.5px; font-stretch:104%}
+.futurecard .flab{font-family:var(--mono); font-size:11px; color:var(--ink-3); letter-spacing:.03em}
+.futurecard p{margin:0; font-size:13.5px; color:var(--ink-2); line-height:1.5}
+.futurecard .frow{margin-top:auto; padding-top:11px; border-top:1px solid var(--line); display:flex; justify-content:space-between; gap:10px; font-family:var(--mono); font-size:11.5px; color:var(--ink-3)}
+.futurecard .frow b{color:var(--ink); font-weight:600}
+.futurecard .fstatus{display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:var(--warn)}
+.futurecard .fstatus i{width:6px; height:6px; border-radius:50%; background:var(--warn); flex:0 0 auto}
+.futurecard a{color:var(--accent)}
+
 .method{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:28px}
 .method div h3{font-size:15px; font-stretch:104%; margin-bottom:7px}
 .method div p{margin:0; font-size:13.5px; color:var(--ink-2)}
@@ -227,6 +238,7 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
       <a href="#rangliste">Rangliste</a>
       <a href="#vergleich">Vergleich</a>
       <a href="#kategorien">Kategorien</a>
+      <a href="#zukunft">Zukunft</a>
       <a href="#methodik">Methodik</a>
     </nav>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Farbschema wechseln">
@@ -325,11 +337,25 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
     </div>
   </section>
 
+  <section id="zukunft">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">04 — Future Possible AI's</p>
+          <h2>Modelle, die kommen könnten</h2>
+          <p>Eine getrennte Liste außerhalb des Index: angekündigte, vermutete oder erwartete Modelle. Keine Punktwerte, weil es nichts zu messen gibt.</p>
+        </div>
+        <span class="chip" aria-hidden="true">Spekulation, keine Messwerte</span>
+      </div>
+      <div id="futuregrid"></div>
+    </div>
+  </section>
+
   <section id="methodik">
     <div class="wrap">
       <div class="sec-head">
         <div>
-          <p class="eyebrow">04 — Methodik</p>
+          <p class="eyebrow">05 — Methodik</p>
           <h2>Wie der Index entsteht</h2>
         </div>
       </div>
@@ -543,6 +569,16 @@ const MODELS = BUILTIN.filter(m => {
   return ok;
 });
 
+/* ============================================================
+   FUTURE POSSIBLE AI'S — getrennt vom Index, ohne Punktwerte.
+   Spekulation über kommende Modelle; nichts hiervon ist gemessen.
+   Schema:
+   { id:"kurzname", name:"Modellname", lab:"Anbieter",
+     erwartet:"2027", status:"angekündigt" | "vermutet" | "Gerücht",
+     quelle:"https://…", note:"Ein Satz dazu." }
+   ============================================================ */
+const FUTURE = [];
+
 const SERIES = ["--s1","--s2","--s3"];
 const $ = (s,r)=> (r||document).querySelector(s);
 const idx = m => CATS.reduce((a,c)=>a+m.s[c.key],0)/CATS.length;
@@ -696,6 +732,30 @@ function renderCats(){
   }).join("");
 }
 
+function renderFuture(){
+  const box = $("#futuregrid");
+  if(!FUTURE.length){
+    box.innerHTML = `<div class="board"><div class="blank">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l2.5 2" stroke-linecap="round"></path></svg>
+      <h3>Noch keine Einträge</h3>
+      <p>Hier stehen Modelle, die es noch nicht gibt: angekündigt, vermutet oder erwartet. Sie bekommen bewusst keine Punkte und zählen nicht in den Index.</p>
+    </div></div>`;
+    return;
+  }
+  box.className = "futuregrid";
+  box.innerHTML = FUTURE.map(f=>`<article class="futurecard">
+    <h3>${esc(f.name)}</h3>
+    <p class="flab">${esc(f.lab || "Anbieter offen")}</p>
+    ${f.note ? `<p>${esc(f.note)}</p>` : ""}
+    <div class="frow">
+      <span class="fstatus"><i></i>${esc(f.status || "vermutet")}</span>
+      <span>erwartet <b>${esc(f.erwartet || "offen")}</b></span>
+    </div>
+    ${f.quelle ? `<p class="flab"><a href="${esc(f.quelle)}" target="_blank" rel="noopener noreferrer">Quelle</a></p>` : ""}
+  </article>`).join("");
+}
+
 function openDrawer(id){
   const m = MODELS.find(x=>x.id===id); if(!m) return;
   const root = $("#drawer-root");
@@ -766,6 +826,7 @@ $("#theme-toggle").addEventListener("click", ()=>{
 
 buildChrome();
 renderCats();
+renderFuture();
 const top = MODELS.length ? MODELS.slice().sort((a,b)=>idx(b)-idx(a))[0] : null;
 $("#fact-models").textContent = MODELS.length;
 $("#fact-cats").textContent = CATS.length;
