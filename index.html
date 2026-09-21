@@ -75,6 +75,8 @@ input{font:inherit}
 .nav{display:flex; gap:4px}
 .nav a{text-decoration:none; font-size:13.5px; color:var(--ink-2); padding:6px 10px; border-radius:7px}
 .nav a:hover{color:var(--ink); background:var(--surface-2)}
+.nav a.nav-accent{color:var(--accent-ink); background:var(--accent); font-weight:600}
+.nav a.nav-accent:hover{background:var(--accent); filter:brightness(1.08); color:var(--accent-ink)}
 .icon-btn{width:34px; height:34px; display:grid; place-items:center; border:1px solid var(--line); border-radius:9px; color:var(--ink-2); background:var(--surface)}
 .icon-btn:hover{color:var(--ink); border-color:var(--line-strong)}
 
@@ -223,7 +225,9 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
 }
 @media (max-width:640px){
   .wrap{padding-inline:16px}
-  .nav{display:none}
+  .nav{display:flex}
+  .nav a{display:none}
+  .nav a.nav-accent{display:block}
   .hero{padding-block:36px 26px}
   section{padding-block:34px}
 }
@@ -242,10 +246,10 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
       <span class="brand-name">AI<em>-</em>Mark</span>
     </a>
     <nav class="nav">
+      <a class="nav-accent" href="#zukunft">Zukunft</a>
       <a href="#rangliste">Rangliste</a>
       <a href="#vergleich">Vergleich</a>
       <a href="#kategorien">Kategorien</a>
-      <a href="#zukunft">Zukunft</a>
       <a href="#methodik">Methodik</a>
     </nav>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Farbschema wechseln">
