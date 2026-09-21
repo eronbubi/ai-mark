@@ -591,7 +591,17 @@ const MODELS = BUILTIN.filter(m => {
    Die Werte in s sind Prognosen, keine Messwerte. Sie zählen nicht in den
    AI-Mark-Index und erscheinen nirgends in der Rangliste.
    ============================================================ */
-const FUTURE = [];
+const FUTURE = [
+  {
+    id:       "gpt-7-gala",
+    name:     "GPT-7 Gala",
+    lab:      "OpenAI (nicht bestätigt)",
+    erwartet: "2027",
+    status:   "Spekulation",
+    note:     "OpenAI hat weder ein GPT-7 noch den Namen „Gala“ angekündigt. Die Punkte sind eine Fortschreibung des Sprungs von GPT-5.6 Sol zu GPT-6 Astra.",
+    s: { text:93, plan:92, verst:96, code:96, research:98, math:96, science:96, agent:97 }
+  }
+];
 
 const SERIES = ["--s1","--s2","--s3"];
 const $ = (s,r)=> (r||document).querySelector(s);
